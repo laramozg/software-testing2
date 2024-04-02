@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,15 +22,16 @@ public class SystemTest {
     @BeforeEach
     void init(){
         system = new System(mock);
-        mockSinFromFile();
-        mockCosFromFile();
-        mockCotFromFile();
-        mockCscFromFile();
-        mockSecFromFile();
-        mockLnFromFile();
-        mockLog2FromFile();
-        mockLog3FromFile();
-        mockLog10FromFile();
+        mockFromFile(mock::cos, "src/test/resources/cos.csv");
+        mockFromFile(mock::sin, "src/test/resources/sin.csv");
+        mockFromFile(mock::cot, "src/test/resources/cot.csv");
+        mockFromFile(mock::sec, "src/test/resources/sec.csv");
+        mockFromFile(mock::csc, "src/test/resources/csc.csv");
+        mockFromFile(mock::ln, "src/test/resources/ln.csv");
+        mockFromFile(mock::log2, "src/test/resources/log2.csv");
+        mockFromFile(mock::log3, "src/test/resources/log3.csv");
+        mockFromFile(mock::log10, "src/test/resources/log10.csv");
+
     }
 
     @ParameterizedTest
@@ -46,59 +48,11 @@ public class SystemTest {
         assertEquals(expected, system.calculate(x), 0.001);
     }
 
-    private void mockSinFromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/sin.csv"))) {
+    private void mockFromFile(Function<Double, Double> function, String fileName) {
+        try (CSVReader csvReader = new CSVReader(new FileReader(fileName))) {
             List<String[]> records = csvReader.readAll();
             for (String[] record : records) {
-                Mockito.when(mock.sin(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void mockCosFromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/cos.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.cos(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void mockSecFromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/sec.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.sec(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void mockCscFromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/csc.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.csc(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void mockCotFromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/cot.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.cot(Double.parseDouble(record[0])))
+                Mockito.when(function.apply(Double.parseDouble(record[0])))
                         .thenReturn(Double.parseDouble(record[1]));
             }
         } catch (IOException | CsvException exception) {
@@ -107,51 +61,4 @@ public class SystemTest {
     }
 
 
-    private void mockLnFromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/ln.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.ln(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void mockLog2FromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/log2.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.log2(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void mockLog3FromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/log3.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.log3(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void mockLog10FromFile() {
-        try (CSVReader csvReader = new CSVReader(new FileReader("src/test/resources/log10.csv"))) {
-            List<String[]> records = csvReader.readAll();
-            for (String[] record : records) {
-                Mockito.when(mock.log10(Double.parseDouble(record[0])))
-                        .thenReturn(Double.parseDouble(record[1]));
-            }
-        } catch (IOException | CsvException exception) {
-            exception.printStackTrace();
-        }
-    }
 }
