@@ -4,11 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -30,10 +32,17 @@ public class SystemTest {
         mockLog10FromFile();
     }
 
+    @ParameterizedTest
+    @ValueSource(doubles = { -Math.PI , -Math.PI/2 , 0, 23})
+    void testTrigNan(double x){
+        assertAll(
+                () -> assertEquals(Double.NaN, system.calculate(x), 0.001)
+        );
+    }
 
     @ParameterizedTest
     @CsvFileSource(resources = "/calculate.csv")
-    void test(double x, double expected){
+    void testSystem(double x, double expected){
         assertEquals(expected, system.calculate(x), 0.001);
     }
 
